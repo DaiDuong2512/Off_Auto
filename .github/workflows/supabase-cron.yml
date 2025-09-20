@@ -5,7 +5,7 @@ on:
     branches:
       - main          # chỉ chạy khi push vào branch main
   schedule:
-    - cron: "*/5 * * * *"   # chạy mỗi 5 phút (theo UTC)
+    - cron: "* * * * *"   # chạy mỗi 1 phút (theo UTC)
   workflow_dispatch:        # cho phép chạy thủ công trong GitHub UI
 
 jobs:
