@@ -1,10 +1,12 @@
 name: Supabase Cron Caller
 
 on:
+  push:               # 👉 Chạy mỗi lần bạn commit/push lên repo
+    branches:
+      - main          # chỉ chạy khi push vào branch main
   schedule:
-    # Chạy mỗi 5 phút
-    - cron: "*/5 * * * *"
-  workflow_dispatch: # Cho phép chạy thủ công trong GitHub UI
+    - cron: "*/5 * * * *"   # chạy mỗi 5 phút (theo UTC)
+  workflow_dispatch:        # cho phép chạy thủ công trong GitHub UI
 
 jobs:
   call-supabase-function:
@@ -14,14 +16,11 @@ jobs:
         run: |
           echo "Gọi Supabase Edge Function..."
           STATUS_CODE=$(curl -s -o response.json -w "%{http_code}" \
-            -X POST "$SUPABASE_URL/functions/v1/set-stale-status-off" \
-            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -X POST "${{ secrets.SUPABASE_URL }}/functions/v1/set-stale-status-off" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
             -H "Content-Type: application/json" \
             -d '{}')
 
           echo "HTTP status: $STATUS_CODE"
           echo "Response body:"
           cat response.json
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
